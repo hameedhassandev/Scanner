@@ -32,7 +32,7 @@ $transitionTable =array(
 '/' =>  array(7,null,null,null,null,6,8,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
 '&' =>  array(15,null,null,null,null,null,null,null,null,null,null,null,null,null,null,7,null,null,null,null,null,null,null),
 '~' =>  array(7,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
-'=' =>  array(14,null,null,null,null,null,null,null,null,null,7,7,null,null,7,null,null,null,null,null,null,null,null),
+'=' =>  array(14,null,null,null,null,7,null,null,null,null,7,7,null,null,7,null,null,null,null,null,null,null,null),
 '!' =>  array(11,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
 '<' =>  array(5,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
 '>' =>  array(10,null,null,null,null,null,null,null,9,null,null,null,13,null,null,null,null,null,null,null,null,null,null),
@@ -75,7 +75,7 @@ function lexemeValidation($lexeme,$flag = true){
 function tokens($arrayOfLexemes,$tTable,$flag = true)
 {
     $tokenObj = new token_type();
-    $lineCounter = 1;
+    $lineCounter = 0;
     $errCounter = 0;
     $allTokens = array();
     $token = "";
@@ -93,7 +93,12 @@ function tokens($arrayOfLexemes,$tTable,$flag = true)
         $keys = array_keys($tTable);
         $lastKey = $keys[count($keys) - 1];
         $operatorList = ['+','-','*','/','&','~','=','!','<','>','|','@','$','#','"' , "'" , '[',']','{','}'];
-        $specialOperator = ['<','>','=','-'];
+        $specialOperator = ['<','>','=','-','*'];
+        if ($lexeme == ';' || strpos($lexeme, "\n")) {
+            $lexeme = '';
+//            $lineCounter++;
+
+        }
 
         if (lexemeValidation($arrayOfLexemes[$i]) == 'd' && ($i + 1 < count($arrayOfLexemes)) && in_array($arrayOfLexemes[$i + 1],$operatorList ) ){
 
@@ -133,19 +138,29 @@ function tokens($arrayOfLexemes,$tTable,$flag = true)
             $currentState = 0;
             $token = "";
         }
+        //
+        elseif ($i == count($arrayOfLexemes)-1 ){
+            $token = $token . $lexeme;
+
+            $type = $tokenObj->tokenType($token);
+            if ($type == false){
+                $type = 'error token';
+                $errCounter++;
+            }
+
+            array_push($allTokens, $token);
+            echo 'line number# ' . $lineCounter . ' token: ' . $token . ' token type: '. $type.'<hr>';
+            $currentState = 0;
+            $token = "";
+
+        }
+        //
         else {
 
             $nextState = $tTable[$input][$currentState];
 
-            if ($lexeme == ';' || strpos($lexeme, "\n")) {
-                $lexeme = '';
-                $lineCounter++;
-
-            }
-
             if ($nextState != null) {
                 $currentState = $nextState;
-
 
                 if ($tTable[$lastKey][$currentState] == true) {
 
@@ -167,8 +182,14 @@ function tokens($arrayOfLexemes,$tTable,$flag = true)
 
                 }
             } else {
-
+            //error token
             $token = $token . $lexeme;
+            if ($token == '**'){
+                array_push($allTokens, $token);
+                echo 'line number# ' . $lineCounter . ' token: ' . $token . ' token type: '. $type.'<hr>';
+                $token = '';
+                $currentState =0;
+            }
                 $type = $tokenObj->tokenType($token);
                 if ($type == false){
                     $type = 'error token';
@@ -200,5 +221,4 @@ for($v = 0 ; $v < count($tokenList) ; $v++){
     echo '<br>';
 }
 echo '<hr>';
-
 
