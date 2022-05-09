@@ -2,7 +2,7 @@
 
 class token_type
 {
-    protected $dictionaryOfKeywords = array(
+    private $dictionaryOfKeywords = array(
         "type"=>"Class","infer"=>"Inheritance",'if'=>"Condition","else"=>"Condition", "ipok"=>"Integer",
         "sipok"=>"SInteger","craf"=>"Character","sequence"=>"String","ipokf"=>"Float","sipokf"=>"SFloat",
         "valueless"=>"Void","rational"=>"Boolean","endthis"=>"Break","however"=>"Loop","when"=>"Loop",
@@ -12,8 +12,10 @@ class token_type
         "~"=>"Logic operators","=="=>"relational operators","<"=>"relational operators",">"=>"relational operators",
         "!="=>"relational operators", "<="=>"relational operators",">="=>"relational operators","="=>"Assignment operator",
         "->"=>"Access Operator","["=>"Braces","]"=>"Braces", "{"=>"Braces",")"=>"Braces","("=>"Braces","}"=>"Braces",'"'=>"Quotation Mark",
-        "'"=>"Quotation Mark","Require"=>"Inclusion","***"=>"comment",
-        "/>"=>"comment",";"=>"semicolon",);
+        "'"=>"Quotation Mark","Require"=>"Inclusion","***"=>"Comment",
+        "/>"=>"Comment",);
+
+
     public function tokenType($token)
     {  $this->dictionaryOfKeywords;
         $key = $token;
