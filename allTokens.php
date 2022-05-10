@@ -12,16 +12,17 @@ class allTokens
 
     function tokens($array){
         $c = new transitionDiagram();
+        $spacChars = [' ', ';' , '\n'];
         for ($x = 0 ; $x < count($array) ; $x++){
             $result = $c->next_transition($array[$x],$this->stat);
             $this->lexeme = $array[$x];
             if ($this->lexeme == ';' || $this->lexeme == '\n'){
                 $this->lexeme = '';
                 $this->linCounter ++;}
-            elseif ($this->lexeme == ' '){
+            if ($this->lexeme == ' '){
                 $this->lexeme = '';
             }
-            if($x == count($array) -1){
+            if($x == count($array) -1 && !in_array($array[$x],$spacChars)){
                 $this->token  = $this->token .$this->lexeme;
                 array_push($this->linAndToken,$this->token,$this->linCounter);
                 array_push($this->allTok,$this->linAndToken);

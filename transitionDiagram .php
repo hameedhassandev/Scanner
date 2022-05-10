@@ -59,24 +59,24 @@ class transitionDiagram
            if ($nextState != null) {
                $accepting = $this->transition_table['acc'][$nextState];
                $currentState = $nextState;
-               return [$currentState, $accepting,$option =0];
+               return [$currentState, $accepting,$flag =0];
            }else{
                $input = 'oth';
                $nextState = $this->transition_table[$input][$currentState];
                if ($nextState != null){
                    $accepting = $this->transition_table['acc'][$nextState];
                    //if option is = 1 i need to make pointer point on the previous lexeme
-                   return [$currentState, $accepting,$option =1];
+                   return [$currentState, $accepting,$flag =1];
                }
                $accepting = $this->transition_table['acc'][$currentState];
-               return [$currentState, $accepting,$option =0];
+               return [$currentState, $accepting,$flag =0];
            }
        }else{
            $input = 'err';
            $currentState = 0;
            $nextState = $this->transition_table[$input][$currentState];
            $accepting = $this->transition_table['acc'][$nextState];
-           return [$currentState,$accepting,$option =0];
+           return [$currentState,$accepting,$flag =0];
        }
 
 

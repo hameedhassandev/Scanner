@@ -9,11 +9,6 @@ public function printTokens($array){
     $token = $allToken->tokens($array);
     for($v = 0 ; $v < count($token) ; $v++){
         $strToken = $token[$v][0];
-        if (strpos($strToken,'***')!== false){
-            $token[$v][0] = '***';
-        }elseif (strpos($strToken,'/>')!== false){
-            $token[$v][0] = '/>';
-        }
         $type = $tokenType->tokenType($token[$v][0]);
         if ($type != false){
             echo '<h3 style="color: black">Line : '. $token[$v][1].' Token Text :  <span style="color: red">'. $token[$v][0] .'</span> &nbsp;Token Type : <span style="color: red">' . $type.'</span></h3>' ;

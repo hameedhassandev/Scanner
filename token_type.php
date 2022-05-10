@@ -12,8 +12,8 @@ class token_type
         "~"=>"Logic operators","=="=>"relational operators","<"=>"relational operators",">"=>"relational operators",
         "!="=>"relational operators", "<="=>"relational operators",">="=>"relational operators","="=>"Assignment operator",
         "->"=>"Access Operator","["=>"Braces","]"=>"Braces", "{"=>"Braces",")"=>"Braces","("=>"Braces","}"=>"Braces",'"'=>"Quotation Mark",
-        "'"=>"Quotation Mark","Require"=>"Inclusion","***"=>"Comment",
-        "/>"=>"Comment",);
+        "'"=>"Quotation Mark","require"=>"Inclusion","***"=>"Comment",
+        "</--/>"=>"Comment",);
 
 
     public function tokenType($token)
@@ -21,6 +21,11 @@ class token_type
         $key = $token;
         $pattern = "/^[a-zA-Z_]+[a-zA-Z0-9_]*$/";
         $convKey = strtolower($key);
+        if (strpos($convKey,'***')!== false){
+            $convKey = '***';
+        }elseif (strpos($convKey,'/>')!== false){
+            $convKey = '</--/>';
+        }
         if (isset($this->dictionaryOfKeywords[$convKey])) {
             return $this->dictionaryOfKeywords[$convKey];
         } elseif (is_numeric($convKey)) {

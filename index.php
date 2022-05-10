@@ -4,7 +4,7 @@ include("transitionDiagram .php");
 include ("allTokens.php");
 include ("printingScanner.php");
 //$te = "*** comment compiler;_2$^||& _6g@type+;43_xxs2e->',(infer<=3;x!=246 30_j {G[]})c_s2 2+ x; c;";
-$te = "@ type infer(x==4;c_78<=221){G[]}";
+$te = "@***comment in compiler;</ll ;so/> type infer(x==4;c_78<=221){G[]},;";
 
 echo $te;
 $lexemeArr = array();
