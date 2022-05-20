@@ -1,46 +1,50 @@
 <?php
-
+include ("ignoreTokens.php");
 
 class allTokens
 {
-    private $linAndToken = array();
     private $allTok = array();
     private $token = '';
-    private $lexeme ='';
-    private $stat = 0;
-    private $linCounter = 1;
+    private $input = '';
+    private $currentState = 0;
+    private $nextState = 0;
+    private $accepting = null;
 
-    function tokens($array){
-        $c = new transitionDiagram();
-        $spacChars = [' ', ';' , '\n'];
-        for ($x = 0 ; $x < count($array) ; $x++){
-            $result = $c->next_transition($array[$x],$this->stat);
-            $this->lexeme = $array[$x];
-            if ($this->lexeme == ';' || $this->lexeme == '\n'){
-                $this->lexeme = '';
-                $this->linCounter ++;}
-            if ($this->lexeme == ' '){
-                $this->lexeme = '';
+
+    public function tokens($array)
+    {
+        $transitionT = new transitionDiagram();
+        $comm = new ignoreTokens();
+        for ($x = 0; $x < count($array); $x++) {
+            $this->input = $array[$x];
+            $this->nextState = $transitionT->next_transition($this->input, $this->currentState);
+            $this->accepting = $transitionT->is_accepting($this->nextState);
+//          ignore whitespace
+            if ($this->input == ' ') {
+                $this->input = '';
             }
-            if($x == count($array) -1 && !in_array($array[$x],$spacChars)){
-                $this->token  = $this->token .$this->lexeme;
-                array_push($this->linAndToken,$this->token,$this->linCounter);
-                array_push($this->allTok,$this->linAndToken);
-            }
-            if ($result[1] == true){
-                $this->stat = 0;
-                if ($result[2] == 1){
-                    $x = $x - 1;
-                    $this->lexeme = '';}
-                $this->token = $this->token . $this->lexeme;
-                array_push($this->linAndToken,$this->token,$this->linCounter);
-                array_push($this->allTok,$this->linAndToken);
+            //check if nextState is an accepting state
+            if ($this->accepting == true || ($x == count($array) -1 && $array[$x] != ' ')) {
+                $this->token = $this->token . $this->input;
+                if (!$comm->ignoreComments($this->token)){
+                    $arrayFromFile = $comm->getTokensInFile($this->token);
+                    if ($arrayFromFile) {
+                        $this->allTok = array_merge($arrayFromFile, $this->allTok);
+
+                    }else {
+
+                        array_push($this->allTok, $this->token);
+                    }
+                }
+                $this->currentState = 0;
                 $this->token = '';
-                $this->linAndToken = array();
-            }else{
-                $this->token = $this->token .$this->lexeme;
-                $this->stat = $result[0];}
+
+            } else {
+                $this->token = $this->token . $this->input;
+                $this->currentState = $this->nextState;
+            }
         }
         return $this->allTok;
     }
+
 }
