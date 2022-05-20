@@ -48,10 +48,11 @@ $st = '';
     </form>
     <br>
 <!---->
-    <input type="file" class="btn btn-dark" id="upload" accept=".txt">
+    <form method="post">
+    <input style="width: 300px" type="text" class="btn btn-dark" name="filePath" placeholder="Enter file path here..." required>
 
     <input type="submit" name="button2" class="btn btn-danger" id="scanFile" value="Scan File" />
-
+    </form>
 </center>
 <div>
     <hr>
@@ -64,10 +65,22 @@ $st = '';
         $pushArr = new pushToArray();
         if (isset($_POST['scan'])){
             $scanner= $_POST['scan'];
-            $te = $scanner;
-            $myArr = $pushArr->pushCharsToArray($te);
+            $string = $scanner;
+            $myArr = $pushArr->pushCharsToArray($string);
             $print = new printingScanner();
             $print->printTokens($myArr);
+        }elseif (isset($_POST['filePath'])){
+            $scanner= $_POST['filePath'];
+            $filePath = $scanner;
+            $valid = new ignoreTokens();
+            $fp = $valid->validPath($filePath);
+            if ($fp != false){
+                $myArr = $pushArr->pushCharsToArray($fp);
+                $print = new printingScanner();
+                $print->printTokens($myArr);
+            }else{
+                echo 'this path is invalid!';
+            }
         }
 
         ?>
@@ -102,25 +115,6 @@ $st = '';
     });
 
 
-    console.log('test')
-
-    let upload = document.getElementById('upload');
-
-    let output = document.getElementById('output');
-
-    upload.addEventListener('change',()=>{
-        let fr = new FileReader();
-        fr.readAsText(upload.files[0]);
-        fr.onload = function(){
-          // var c =   output.innerHTML = fr.result;
-          <?php
-
-           $st = 'output.innerHTML = fr.result;';
-            echo $st;
-
-            ?>
-        };
-    });
 
 
 </script>
